@@ -1,0 +1,7 @@
+type Solution {
+  id: ID! @id
+  body: String!
+  pic: String!
+  author: User! @relation(name: "OwnSolutions", onDelete: SET_NULL)
+  likedBy: [User!]! @relation(name: "LikedSolutions", onDelete: SET_NULL)
+}

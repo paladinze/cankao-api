@@ -11,6 +11,10 @@ type AggregateQuestion {
   count: Int!
 }
 
+type AggregateSolution {
+  count: Int!
+}
+
 type AggregateUser {
   count: Int!
 }
@@ -175,6 +179,12 @@ type Mutation {
   upsertQuestion(where: QuestionWhereUniqueInput!, create: QuestionCreateInput!, update: QuestionUpdateInput!): Question!
   deleteQuestion(where: QuestionWhereUniqueInput!): Question
   deleteManyQuestions(where: QuestionWhereInput): BatchPayload!
+  createSolution(data: SolutionCreateInput!): Solution!
+  updateSolution(data: SolutionUpdateInput!, where: SolutionWhereUniqueInput!): Solution
+  updateManySolutions(data: SolutionUpdateManyMutationInput!, where: SolutionWhereInput): BatchPayload!
+  upsertSolution(where: SolutionWhereUniqueInput!, create: SolutionCreateInput!, update: SolutionUpdateInput!): Solution!
+  deleteSolution(where: SolutionWhereUniqueInput!): Solution
+  deleteManySolutions(where: SolutionWhereInput): BatchPayload!
   createUser(data: UserCreateInput!): User!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
@@ -207,6 +217,9 @@ type Query {
   question(where: QuestionWhereUniqueInput!): Question
   questions(where: QuestionWhereInput, orderBy: QuestionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Question]!
   questionsConnection(where: QuestionWhereInput, orderBy: QuestionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): QuestionConnection!
+  solution(where: SolutionWhereUniqueInput!): Solution
+  solutions(where: SolutionWhereInput, orderBy: SolutionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Solution]!
+  solutionsConnection(where: SolutionWhereInput, orderBy: SolutionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SolutionConnection!
   user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
@@ -218,6 +231,7 @@ type Question {
   title: String!
   body: String!
   pic: String!
+  author: User!
 }
 
 type QuestionConnection {
@@ -227,6 +241,19 @@ type QuestionConnection {
 }
 
 input QuestionCreateInput {
+  id: ID
+  title: String!
+  body: String!
+  pic: String!
+  author: UserCreateOneWithoutQuestionsInput!
+}
+
+input QuestionCreateManyWithoutAuthorInput {
+  create: [QuestionCreateWithoutAuthorInput!]
+  connect: [QuestionWhereUniqueInput!]
+}
+
+input QuestionCreateWithoutAuthorInput {
   id: ID
   title: String!
   body: String!
@@ -256,6 +283,68 @@ type QuestionPreviousValues {
   pic: String!
 }
 
+input QuestionScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  body: String
+  body_not: String
+  body_in: [String!]
+  body_not_in: [String!]
+  body_lt: String
+  body_lte: String
+  body_gt: String
+  body_gte: String
+  body_contains: String
+  body_not_contains: String
+  body_starts_with: String
+  body_not_starts_with: String
+  body_ends_with: String
+  body_not_ends_with: String
+  pic: String
+  pic_not: String
+  pic_in: [String!]
+  pic_not_in: [String!]
+  pic_lt: String
+  pic_lte: String
+  pic_gt: String
+  pic_gte: String
+  pic_contains: String
+  pic_not_contains: String
+  pic_starts_with: String
+  pic_not_starts_with: String
+  pic_ends_with: String
+  pic_not_ends_with: String
+  AND: [QuestionScalarWhereInput!]
+  OR: [QuestionScalarWhereInput!]
+  NOT: [QuestionScalarWhereInput!]
+}
+
 type QuestionSubscriptionPayload {
   mutation: MutationType!
   node: Question
@@ -278,12 +367,53 @@ input QuestionUpdateInput {
   title: String
   body: String
   pic: String
+  author: UserUpdateOneRequiredWithoutQuestionsInput
+}
+
+input QuestionUpdateManyDataInput {
+  title: String
+  body: String
+  pic: String
 }
 
 input QuestionUpdateManyMutationInput {
   title: String
   body: String
   pic: String
+}
+
+input QuestionUpdateManyWithoutAuthorInput {
+  create: [QuestionCreateWithoutAuthorInput!]
+  delete: [QuestionWhereUniqueInput!]
+  connect: [QuestionWhereUniqueInput!]
+  set: [QuestionWhereUniqueInput!]
+  disconnect: [QuestionWhereUniqueInput!]
+  update: [QuestionUpdateWithWhereUniqueWithoutAuthorInput!]
+  upsert: [QuestionUpsertWithWhereUniqueWithoutAuthorInput!]
+  deleteMany: [QuestionScalarWhereInput!]
+  updateMany: [QuestionUpdateManyWithWhereNestedInput!]
+}
+
+input QuestionUpdateManyWithWhereNestedInput {
+  where: QuestionScalarWhereInput!
+  data: QuestionUpdateManyDataInput!
+}
+
+input QuestionUpdateWithoutAuthorDataInput {
+  title: String
+  body: String
+  pic: String
+}
+
+input QuestionUpdateWithWhereUniqueWithoutAuthorInput {
+  where: QuestionWhereUniqueInput!
+  data: QuestionUpdateWithoutAuthorDataInput!
+}
+
+input QuestionUpsertWithWhereUniqueWithoutAuthorInput {
+  where: QuestionWhereUniqueInput!
+  update: QuestionUpdateWithoutAuthorDataInput!
+  create: QuestionCreateWithoutAuthorInput!
 }
 
 input QuestionWhereInput {
@@ -343,6 +473,7 @@ input QuestionWhereInput {
   pic_not_starts_with: String
   pic_ends_with: String
   pic_not_ends_with: String
+  author: UserWhereInput
   AND: [QuestionWhereInput!]
   OR: [QuestionWhereInput!]
   NOT: [QuestionWhereInput!]
@@ -352,9 +483,278 @@ input QuestionWhereUniqueInput {
   id: ID
 }
 
+type Solution {
+  id: ID!
+  body: String!
+  pic: String!
+  author: User!
+  likedBy(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
+}
+
+type SolutionConnection {
+  pageInfo: PageInfo!
+  edges: [SolutionEdge]!
+  aggregate: AggregateSolution!
+}
+
+input SolutionCreateInput {
+  id: ID
+  body: String!
+  pic: String!
+  author: UserCreateOneWithoutSolutionsInput!
+  likedBy: UserCreateManyWithoutLikedSolutionsInput
+}
+
+input SolutionCreateManyWithoutAuthorInput {
+  create: [SolutionCreateWithoutAuthorInput!]
+  connect: [SolutionWhereUniqueInput!]
+}
+
+input SolutionCreateManyWithoutLikedByInput {
+  create: [SolutionCreateWithoutLikedByInput!]
+  connect: [SolutionWhereUniqueInput!]
+}
+
+input SolutionCreateWithoutAuthorInput {
+  id: ID
+  body: String!
+  pic: String!
+  likedBy: UserCreateManyWithoutLikedSolutionsInput
+}
+
+input SolutionCreateWithoutLikedByInput {
+  id: ID
+  body: String!
+  pic: String!
+  author: UserCreateOneWithoutSolutionsInput!
+}
+
+type SolutionEdge {
+  node: Solution!
+  cursor: String!
+}
+
+enum SolutionOrderByInput {
+  id_ASC
+  id_DESC
+  body_ASC
+  body_DESC
+  pic_ASC
+  pic_DESC
+}
+
+type SolutionPreviousValues {
+  id: ID!
+  body: String!
+  pic: String!
+}
+
+input SolutionScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  body: String
+  body_not: String
+  body_in: [String!]
+  body_not_in: [String!]
+  body_lt: String
+  body_lte: String
+  body_gt: String
+  body_gte: String
+  body_contains: String
+  body_not_contains: String
+  body_starts_with: String
+  body_not_starts_with: String
+  body_ends_with: String
+  body_not_ends_with: String
+  pic: String
+  pic_not: String
+  pic_in: [String!]
+  pic_not_in: [String!]
+  pic_lt: String
+  pic_lte: String
+  pic_gt: String
+  pic_gte: String
+  pic_contains: String
+  pic_not_contains: String
+  pic_starts_with: String
+  pic_not_starts_with: String
+  pic_ends_with: String
+  pic_not_ends_with: String
+  AND: [SolutionScalarWhereInput!]
+  OR: [SolutionScalarWhereInput!]
+  NOT: [SolutionScalarWhereInput!]
+}
+
+type SolutionSubscriptionPayload {
+  mutation: MutationType!
+  node: Solution
+  updatedFields: [String!]
+  previousValues: SolutionPreviousValues
+}
+
+input SolutionSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: SolutionWhereInput
+  AND: [SolutionSubscriptionWhereInput!]
+  OR: [SolutionSubscriptionWhereInput!]
+  NOT: [SolutionSubscriptionWhereInput!]
+}
+
+input SolutionUpdateInput {
+  body: String
+  pic: String
+  author: UserUpdateOneRequiredWithoutSolutionsInput
+  likedBy: UserUpdateManyWithoutLikedSolutionsInput
+}
+
+input SolutionUpdateManyDataInput {
+  body: String
+  pic: String
+}
+
+input SolutionUpdateManyMutationInput {
+  body: String
+  pic: String
+}
+
+input SolutionUpdateManyWithoutAuthorInput {
+  create: [SolutionCreateWithoutAuthorInput!]
+  delete: [SolutionWhereUniqueInput!]
+  connect: [SolutionWhereUniqueInput!]
+  set: [SolutionWhereUniqueInput!]
+  disconnect: [SolutionWhereUniqueInput!]
+  update: [SolutionUpdateWithWhereUniqueWithoutAuthorInput!]
+  upsert: [SolutionUpsertWithWhereUniqueWithoutAuthorInput!]
+  deleteMany: [SolutionScalarWhereInput!]
+  updateMany: [SolutionUpdateManyWithWhereNestedInput!]
+}
+
+input SolutionUpdateManyWithoutLikedByInput {
+  create: [SolutionCreateWithoutLikedByInput!]
+  delete: [SolutionWhereUniqueInput!]
+  connect: [SolutionWhereUniqueInput!]
+  set: [SolutionWhereUniqueInput!]
+  disconnect: [SolutionWhereUniqueInput!]
+  update: [SolutionUpdateWithWhereUniqueWithoutLikedByInput!]
+  upsert: [SolutionUpsertWithWhereUniqueWithoutLikedByInput!]
+  deleteMany: [SolutionScalarWhereInput!]
+  updateMany: [SolutionUpdateManyWithWhereNestedInput!]
+}
+
+input SolutionUpdateManyWithWhereNestedInput {
+  where: SolutionScalarWhereInput!
+  data: SolutionUpdateManyDataInput!
+}
+
+input SolutionUpdateWithoutAuthorDataInput {
+  body: String
+  pic: String
+  likedBy: UserUpdateManyWithoutLikedSolutionsInput
+}
+
+input SolutionUpdateWithoutLikedByDataInput {
+  body: String
+  pic: String
+  author: UserUpdateOneRequiredWithoutSolutionsInput
+}
+
+input SolutionUpdateWithWhereUniqueWithoutAuthorInput {
+  where: SolutionWhereUniqueInput!
+  data: SolutionUpdateWithoutAuthorDataInput!
+}
+
+input SolutionUpdateWithWhereUniqueWithoutLikedByInput {
+  where: SolutionWhereUniqueInput!
+  data: SolutionUpdateWithoutLikedByDataInput!
+}
+
+input SolutionUpsertWithWhereUniqueWithoutAuthorInput {
+  where: SolutionWhereUniqueInput!
+  update: SolutionUpdateWithoutAuthorDataInput!
+  create: SolutionCreateWithoutAuthorInput!
+}
+
+input SolutionUpsertWithWhereUniqueWithoutLikedByInput {
+  where: SolutionWhereUniqueInput!
+  update: SolutionUpdateWithoutLikedByDataInput!
+  create: SolutionCreateWithoutLikedByInput!
+}
+
+input SolutionWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  body: String
+  body_not: String
+  body_in: [String!]
+  body_not_in: [String!]
+  body_lt: String
+  body_lte: String
+  body_gt: String
+  body_gte: String
+  body_contains: String
+  body_not_contains: String
+  body_starts_with: String
+  body_not_starts_with: String
+  body_ends_with: String
+  body_not_ends_with: String
+  pic: String
+  pic_not: String
+  pic_in: [String!]
+  pic_not_in: [String!]
+  pic_lt: String
+  pic_lte: String
+  pic_gt: String
+  pic_gte: String
+  pic_contains: String
+  pic_not_contains: String
+  pic_starts_with: String
+  pic_not_starts_with: String
+  pic_ends_with: String
+  pic_not_ends_with: String
+  author: UserWhereInput
+  likedBy_every: UserWhereInput
+  likedBy_some: UserWhereInput
+  likedBy_none: UserWhereInput
+  AND: [SolutionWhereInput!]
+  OR: [SolutionWhereInput!]
+  NOT: [SolutionWhereInput!]
+}
+
+input SolutionWhereUniqueInput {
+  id: ID
+}
+
 type Subscription {
   book(where: BookSubscriptionWhereInput): BookSubscriptionPayload
   question(where: QuestionSubscriptionWhereInput): QuestionSubscriptionPayload
+  solution(where: SolutionSubscriptionWhereInput): SolutionSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
 
@@ -365,6 +765,9 @@ type User {
   password: String!
   updatedAt: DateTime!
   createdAt: DateTime!
+  questions(where: QuestionWhereInput, orderBy: QuestionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Question!]
+  solutions(where: SolutionWhereInput, orderBy: SolutionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Solution!]
+  likedSolutions(where: SolutionWhereInput, orderBy: SolutionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Solution!]
 }
 
 type UserConnection {
@@ -378,6 +781,51 @@ input UserCreateInput {
   username: String!
   email: String!
   password: String!
+  questions: QuestionCreateManyWithoutAuthorInput
+  solutions: SolutionCreateManyWithoutAuthorInput
+  likedSolutions: SolutionCreateManyWithoutLikedByInput
+}
+
+input UserCreateManyWithoutLikedSolutionsInput {
+  create: [UserCreateWithoutLikedSolutionsInput!]
+  connect: [UserWhereUniqueInput!]
+}
+
+input UserCreateOneWithoutQuestionsInput {
+  create: UserCreateWithoutQuestionsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutSolutionsInput {
+  create: UserCreateWithoutSolutionsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutLikedSolutionsInput {
+  id: ID
+  username: String!
+  email: String!
+  password: String!
+  questions: QuestionCreateManyWithoutAuthorInput
+  solutions: SolutionCreateManyWithoutAuthorInput
+}
+
+input UserCreateWithoutQuestionsInput {
+  id: ID
+  username: String!
+  email: String!
+  password: String!
+  solutions: SolutionCreateManyWithoutAuthorInput
+  likedSolutions: SolutionCreateManyWithoutLikedByInput
+}
+
+input UserCreateWithoutSolutionsInput {
+  id: ID
+  username: String!
+  email: String!
+  password: String!
+  questions: QuestionCreateManyWithoutAuthorInput
+  likedSolutions: SolutionCreateManyWithoutLikedByInput
 }
 
 type UserEdge {
@@ -409,6 +857,84 @@ type UserPreviousValues {
   createdAt: DateTime!
 }
 
+input UserScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  username: String
+  username_not: String
+  username_in: [String!]
+  username_not_in: [String!]
+  username_lt: String
+  username_lte: String
+  username_gt: String
+  username_gte: String
+  username_contains: String
+  username_not_contains: String
+  username_starts_with: String
+  username_not_starts_with: String
+  username_ends_with: String
+  username_not_ends_with: String
+  email: String
+  email_not: String
+  email_in: [String!]
+  email_not_in: [String!]
+  email_lt: String
+  email_lte: String
+  email_gt: String
+  email_gte: String
+  email_contains: String
+  email_not_contains: String
+  email_starts_with: String
+  email_not_starts_with: String
+  email_ends_with: String
+  email_not_ends_with: String
+  password: String
+  password_not: String
+  password_in: [String!]
+  password_not_in: [String!]
+  password_lt: String
+  password_lte: String
+  password_gt: String
+  password_gte: String
+  password_contains: String
+  password_not_contains: String
+  password_starts_with: String
+  password_not_starts_with: String
+  password_ends_with: String
+  password_not_ends_with: String
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [UserScalarWhereInput!]
+  OR: [UserScalarWhereInput!]
+  NOT: [UserScalarWhereInput!]
+}
+
 type UserSubscriptionPayload {
   mutation: MutationType!
   node: User
@@ -431,12 +957,97 @@ input UserUpdateInput {
   username: String
   email: String
   password: String
+  questions: QuestionUpdateManyWithoutAuthorInput
+  solutions: SolutionUpdateManyWithoutAuthorInput
+  likedSolutions: SolutionUpdateManyWithoutLikedByInput
+}
+
+input UserUpdateManyDataInput {
+  username: String
+  email: String
+  password: String
 }
 
 input UserUpdateManyMutationInput {
   username: String
   email: String
   password: String
+}
+
+input UserUpdateManyWithoutLikedSolutionsInput {
+  create: [UserCreateWithoutLikedSolutionsInput!]
+  delete: [UserWhereUniqueInput!]
+  connect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  disconnect: [UserWhereUniqueInput!]
+  update: [UserUpdateWithWhereUniqueWithoutLikedSolutionsInput!]
+  upsert: [UserUpsertWithWhereUniqueWithoutLikedSolutionsInput!]
+  deleteMany: [UserScalarWhereInput!]
+  updateMany: [UserUpdateManyWithWhereNestedInput!]
+}
+
+input UserUpdateManyWithWhereNestedInput {
+  where: UserScalarWhereInput!
+  data: UserUpdateManyDataInput!
+}
+
+input UserUpdateOneRequiredWithoutQuestionsInput {
+  create: UserCreateWithoutQuestionsInput
+  update: UserUpdateWithoutQuestionsDataInput
+  upsert: UserUpsertWithoutQuestionsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserUpdateOneRequiredWithoutSolutionsInput {
+  create: UserCreateWithoutSolutionsInput
+  update: UserUpdateWithoutSolutionsDataInput
+  upsert: UserUpsertWithoutSolutionsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserUpdateWithoutLikedSolutionsDataInput {
+  username: String
+  email: String
+  password: String
+  questions: QuestionUpdateManyWithoutAuthorInput
+  solutions: SolutionUpdateManyWithoutAuthorInput
+}
+
+input UserUpdateWithoutQuestionsDataInput {
+  username: String
+  email: String
+  password: String
+  solutions: SolutionUpdateManyWithoutAuthorInput
+  likedSolutions: SolutionUpdateManyWithoutLikedByInput
+}
+
+input UserUpdateWithoutSolutionsDataInput {
+  username: String
+  email: String
+  password: String
+  questions: QuestionUpdateManyWithoutAuthorInput
+  likedSolutions: SolutionUpdateManyWithoutLikedByInput
+}
+
+input UserUpdateWithWhereUniqueWithoutLikedSolutionsInput {
+  where: UserWhereUniqueInput!
+  data: UserUpdateWithoutLikedSolutionsDataInput!
+}
+
+input UserUpsertWithoutQuestionsInput {
+  update: UserUpdateWithoutQuestionsDataInput!
+  create: UserCreateWithoutQuestionsInput!
+}
+
+input UserUpsertWithoutSolutionsInput {
+  update: UserUpdateWithoutSolutionsDataInput!
+  create: UserCreateWithoutSolutionsInput!
+}
+
+input UserUpsertWithWhereUniqueWithoutLikedSolutionsInput {
+  where: UserWhereUniqueInput!
+  update: UserUpdateWithoutLikedSolutionsDataInput!
+  create: UserCreateWithoutLikedSolutionsInput!
 }
 
 input UserWhereInput {
@@ -512,6 +1123,15 @@ input UserWhereInput {
   createdAt_lte: DateTime
   createdAt_gt: DateTime
   createdAt_gte: DateTime
+  questions_every: QuestionWhereInput
+  questions_some: QuestionWhereInput
+  questions_none: QuestionWhereInput
+  solutions_every: SolutionWhereInput
+  solutions_some: SolutionWhereInput
+  solutions_none: SolutionWhereInput
+  likedSolutions_every: SolutionWhereInput
+  likedSolutions_some: SolutionWhereInput
+  likedSolutions_none: SolutionWhereInput
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]

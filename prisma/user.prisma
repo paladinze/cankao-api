@@ -1,0 +1,11 @@
+type User {
+  id: ID! @id
+  username: String! @unique
+  email: String! @unique
+  password: String!
+  updatedAt: DateTime! @updatedAt
+  createdAt: DateTime! @createdAt
+  questions: [Question!]! @relation(name: "OwnQuestions", onDelete: CASCADE)
+  solutions: [Solution!]! @relation(name: "OwnSolutions", onDelete: CASCADE)
+  likedSolutions: [Solution!]! @relation(name: "LikedSolutions", onDelete: CASCADE)
+}

@@ -18,6 +18,7 @@ export type Maybe<T> = T | undefined | null;
 export interface Exists {
   book: (where?: BookWhereInput) => Promise<boolean>;
   question: (where?: QuestionWhereInput) => Promise<boolean>;
+  solution: (where?: SolutionWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
 }
 
@@ -78,6 +79,25 @@ export interface Prisma {
     first?: Int;
     last?: Int;
   }) => QuestionConnectionPromise;
+  solution: (where: SolutionWhereUniqueInput) => SolutionNullablePromise;
+  solutions: (args?: {
+    where?: SolutionWhereInput;
+    orderBy?: SolutionOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => FragmentableArray<Solution>;
+  solutionsConnection: (args?: {
+    where?: SolutionWhereInput;
+    orderBy?: SolutionOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => SolutionConnectionPromise;
   user: (where: UserWhereUniqueInput) => UserNullablePromise;
   users: (args?: {
     where?: UserWhereInput;
@@ -135,6 +155,22 @@ export interface Prisma {
   }) => QuestionPromise;
   deleteQuestion: (where: QuestionWhereUniqueInput) => QuestionPromise;
   deleteManyQuestions: (where?: QuestionWhereInput) => BatchPayloadPromise;
+  createSolution: (data: SolutionCreateInput) => SolutionPromise;
+  updateSolution: (args: {
+    data: SolutionUpdateInput;
+    where: SolutionWhereUniqueInput;
+  }) => SolutionPromise;
+  updateManySolutions: (args: {
+    data: SolutionUpdateManyMutationInput;
+    where?: SolutionWhereInput;
+  }) => BatchPayloadPromise;
+  upsertSolution: (args: {
+    where: SolutionWhereUniqueInput;
+    create: SolutionCreateInput;
+    update: SolutionUpdateInput;
+  }) => SolutionPromise;
+  deleteSolution: (where: SolutionWhereUniqueInput) => SolutionPromise;
+  deleteManySolutions: (where?: SolutionWhereInput) => BatchPayloadPromise;
   createUser: (data: UserCreateInput) => UserPromise;
   updateUser: (args: {
     data: UserUpdateInput;
@@ -166,6 +202,9 @@ export interface Subscription {
   question: (
     where?: QuestionSubscriptionWhereInput
   ) => QuestionSubscriptionPayloadSubscription;
+  solution: (
+    where?: SolutionSubscriptionWhereInput
+  ) => SolutionSubscriptionPayloadSubscription;
   user: (
     where?: UserSubscriptionWhereInput
   ) => UserSubscriptionPayloadSubscription;
@@ -179,6 +218,16 @@ export interface ClientConstructor<T> {
  * Types
  */
 
+export type QuestionOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "title_ASC"
+  | "title_DESC"
+  | "body_ASC"
+  | "body_DESC"
+  | "pic_ASC"
+  | "pic_DESC";
+
 export type BookOrderByInput =
   | "id_ASC"
   | "id_DESC"
@@ -189,13 +238,9 @@ export type BookOrderByInput =
   | "pic_ASC"
   | "pic_DESC";
 
-export type MutationType = "CREATED" | "UPDATED" | "DELETED";
-
-export type QuestionOrderByInput =
+export type SolutionOrderByInput =
   | "id_ASC"
   | "id_DESC"
-  | "title_ASC"
-  | "title_DESC"
   | "body_ASC"
   | "body_DESC"
   | "pic_ASC"
@@ -215,30 +260,243 @@ export type UserOrderByInput =
   | "createdAt_ASC"
   | "createdAt_DESC";
 
-export type QuestionWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-}>;
+export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
-export interface QuestionSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<QuestionWhereInput>;
-  AND?: Maybe<
-    QuestionSubscriptionWhereInput[] | QuestionSubscriptionWhereInput
-  >;
-  OR?: Maybe<QuestionSubscriptionWhereInput[] | QuestionSubscriptionWhereInput>;
-  NOT?: Maybe<
-    QuestionSubscriptionWhereInput[] | QuestionSubscriptionWhereInput
-  >;
+export interface UserCreateWithoutSolutionsInput {
+  id?: Maybe<ID_Input>;
+  username: String;
+  email: String;
+  password: String;
+  questions?: Maybe<QuestionCreateManyWithoutAuthorInput>;
+  likedSolutions?: Maybe<SolutionCreateManyWithoutLikedByInput>;
 }
 
 export type BookWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
 }>;
 
-export interface QuestionCreateInput {
+export interface UserCreateOneWithoutQuestionsInput {
+  create?: Maybe<UserCreateWithoutQuestionsInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface SolutionUpsertWithWhereUniqueWithoutAuthorInput {
+  where: SolutionWhereUniqueInput;
+  update: SolutionUpdateWithoutAuthorDataInput;
+  create: SolutionCreateWithoutAuthorInput;
+}
+
+export interface UserCreateWithoutQuestionsInput {
+  id?: Maybe<ID_Input>;
+  username: String;
+  email: String;
+  password: String;
+  solutions?: Maybe<SolutionCreateManyWithoutAuthorInput>;
+  likedSolutions?: Maybe<SolutionCreateManyWithoutLikedByInput>;
+}
+
+export interface SolutionUpdateManyWithoutAuthorInput {
+  create?: Maybe<
+    SolutionCreateWithoutAuthorInput[] | SolutionCreateWithoutAuthorInput
+  >;
+  delete?: Maybe<SolutionWhereUniqueInput[] | SolutionWhereUniqueInput>;
+  connect?: Maybe<SolutionWhereUniqueInput[] | SolutionWhereUniqueInput>;
+  set?: Maybe<SolutionWhereUniqueInput[] | SolutionWhereUniqueInput>;
+  disconnect?: Maybe<SolutionWhereUniqueInput[] | SolutionWhereUniqueInput>;
+  update?: Maybe<
+    | SolutionUpdateWithWhereUniqueWithoutAuthorInput[]
+    | SolutionUpdateWithWhereUniqueWithoutAuthorInput
+  >;
+  upsert?: Maybe<
+    | SolutionUpsertWithWhereUniqueWithoutAuthorInput[]
+    | SolutionUpsertWithWhereUniqueWithoutAuthorInput
+  >;
+  deleteMany?: Maybe<SolutionScalarWhereInput[] | SolutionScalarWhereInput>;
+  updateMany?: Maybe<
+    | SolutionUpdateManyWithWhereNestedInput[]
+    | SolutionUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface SolutionCreateManyWithoutAuthorInput {
+  create?: Maybe<
+    SolutionCreateWithoutAuthorInput[] | SolutionCreateWithoutAuthorInput
+  >;
+  connect?: Maybe<SolutionWhereUniqueInput[] | SolutionWhereUniqueInput>;
+}
+
+export interface SolutionSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<SolutionWhereInput>;
+  AND?: Maybe<
+    SolutionSubscriptionWhereInput[] | SolutionSubscriptionWhereInput
+  >;
+  OR?: Maybe<SolutionSubscriptionWhereInput[] | SolutionSubscriptionWhereInput>;
+  NOT?: Maybe<
+    SolutionSubscriptionWhereInput[] | SolutionSubscriptionWhereInput
+  >;
+}
+
+export interface SolutionCreateWithoutAuthorInput {
+  id?: Maybe<ID_Input>;
+  body: String;
+  pic: String;
+  likedBy?: Maybe<UserCreateManyWithoutLikedSolutionsInput>;
+}
+
+export type QuestionWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
+
+export interface UserCreateManyWithoutLikedSolutionsInput {
+  create?: Maybe<
+    | UserCreateWithoutLikedSolutionsInput[]
+    | UserCreateWithoutLikedSolutionsInput
+  >;
+  connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+}
+
+export interface UserUpdateManyMutationInput {
+  username?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+}
+
+export interface UserCreateWithoutLikedSolutionsInput {
+  id?: Maybe<ID_Input>;
+  username: String;
+  email: String;
+  password: String;
+  questions?: Maybe<QuestionCreateManyWithoutAuthorInput>;
+  solutions?: Maybe<SolutionCreateManyWithoutAuthorInput>;
+}
+
+export interface QuestionWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  title?: Maybe<String>;
+  title_not?: Maybe<String>;
+  title_in?: Maybe<String[] | String>;
+  title_not_in?: Maybe<String[] | String>;
+  title_lt?: Maybe<String>;
+  title_lte?: Maybe<String>;
+  title_gt?: Maybe<String>;
+  title_gte?: Maybe<String>;
+  title_contains?: Maybe<String>;
+  title_not_contains?: Maybe<String>;
+  title_starts_with?: Maybe<String>;
+  title_not_starts_with?: Maybe<String>;
+  title_ends_with?: Maybe<String>;
+  title_not_ends_with?: Maybe<String>;
+  body?: Maybe<String>;
+  body_not?: Maybe<String>;
+  body_in?: Maybe<String[] | String>;
+  body_not_in?: Maybe<String[] | String>;
+  body_lt?: Maybe<String>;
+  body_lte?: Maybe<String>;
+  body_gt?: Maybe<String>;
+  body_gte?: Maybe<String>;
+  body_contains?: Maybe<String>;
+  body_not_contains?: Maybe<String>;
+  body_starts_with?: Maybe<String>;
+  body_not_starts_with?: Maybe<String>;
+  body_ends_with?: Maybe<String>;
+  body_not_ends_with?: Maybe<String>;
+  pic?: Maybe<String>;
+  pic_not?: Maybe<String>;
+  pic_in?: Maybe<String[] | String>;
+  pic_not_in?: Maybe<String[] | String>;
+  pic_lt?: Maybe<String>;
+  pic_lte?: Maybe<String>;
+  pic_gt?: Maybe<String>;
+  pic_gte?: Maybe<String>;
+  pic_contains?: Maybe<String>;
+  pic_not_contains?: Maybe<String>;
+  pic_starts_with?: Maybe<String>;
+  pic_not_starts_with?: Maybe<String>;
+  pic_ends_with?: Maybe<String>;
+  pic_not_ends_with?: Maybe<String>;
+  author?: Maybe<UserWhereInput>;
+  AND?: Maybe<QuestionWhereInput[] | QuestionWhereInput>;
+  OR?: Maybe<QuestionWhereInput[] | QuestionWhereInput>;
+  NOT?: Maybe<QuestionWhereInput[] | QuestionWhereInput>;
+}
+
+export interface QuestionCreateManyWithoutAuthorInput {
+  create?: Maybe<
+    QuestionCreateWithoutAuthorInput[] | QuestionCreateWithoutAuthorInput
+  >;
+  connect?: Maybe<QuestionWhereUniqueInput[] | QuestionWhereUniqueInput>;
+}
+
+export interface SolutionWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  body?: Maybe<String>;
+  body_not?: Maybe<String>;
+  body_in?: Maybe<String[] | String>;
+  body_not_in?: Maybe<String[] | String>;
+  body_lt?: Maybe<String>;
+  body_lte?: Maybe<String>;
+  body_gt?: Maybe<String>;
+  body_gte?: Maybe<String>;
+  body_contains?: Maybe<String>;
+  body_not_contains?: Maybe<String>;
+  body_starts_with?: Maybe<String>;
+  body_not_starts_with?: Maybe<String>;
+  body_ends_with?: Maybe<String>;
+  body_not_ends_with?: Maybe<String>;
+  pic?: Maybe<String>;
+  pic_not?: Maybe<String>;
+  pic_in?: Maybe<String[] | String>;
+  pic_not_in?: Maybe<String[] | String>;
+  pic_lt?: Maybe<String>;
+  pic_lte?: Maybe<String>;
+  pic_gt?: Maybe<String>;
+  pic_gte?: Maybe<String>;
+  pic_contains?: Maybe<String>;
+  pic_not_contains?: Maybe<String>;
+  pic_starts_with?: Maybe<String>;
+  pic_not_starts_with?: Maybe<String>;
+  pic_ends_with?: Maybe<String>;
+  pic_not_ends_with?: Maybe<String>;
+  author?: Maybe<UserWhereInput>;
+  likedBy_every?: Maybe<UserWhereInput>;
+  likedBy_some?: Maybe<UserWhereInput>;
+  likedBy_none?: Maybe<UserWhereInput>;
+  AND?: Maybe<SolutionWhereInput[] | SolutionWhereInput>;
+  OR?: Maybe<SolutionWhereInput[] | SolutionWhereInput>;
+  NOT?: Maybe<SolutionWhereInput[] | SolutionWhereInput>;
+}
+
+export interface QuestionCreateWithoutAuthorInput {
   id?: Maybe<ID_Input>;
   title: String;
   body: String;
@@ -307,16 +565,84 @@ export interface BookWhereInput {
   NOT?: Maybe<BookWhereInput[] | BookWhereInput>;
 }
 
-export interface BookUpdateManyMutationInput {
+export interface SolutionCreateManyWithoutLikedByInput {
+  create?: Maybe<
+    SolutionCreateWithoutLikedByInput[] | SolutionCreateWithoutLikedByInput
+  >;
+  connect?: Maybe<SolutionWhereUniqueInput[] | SolutionWhereUniqueInput>;
+}
+
+export interface SolutionUpdateInput {
+  body?: Maybe<String>;
+  pic?: Maybe<String>;
+  author?: Maybe<UserUpdateOneRequiredWithoutSolutionsInput>;
+  likedBy?: Maybe<UserUpdateManyWithoutLikedSolutionsInput>;
+}
+
+export interface SolutionCreateWithoutLikedByInput {
+  id?: Maybe<ID_Input>;
+  body: String;
+  pic: String;
+  author: UserCreateOneWithoutSolutionsInput;
+}
+
+export interface QuestionUpdateManyMutationInput {
   title?: Maybe<String>;
-  author?: Maybe<String>;
+  body?: Maybe<String>;
   pic?: Maybe<String>;
 }
 
-export interface UserUpdateManyMutationInput {
+export interface UserCreateOneWithoutSolutionsInput {
+  create?: Maybe<UserCreateWithoutSolutionsInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export type SolutionWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
+
+export interface SolutionUpdateManyWithWhereNestedInput {
+  where: SolutionScalarWhereInput;
+  data: SolutionUpdateManyDataInput;
+}
+
+export interface UserUpsertWithoutSolutionsInput {
+  update: UserUpdateWithoutSolutionsDataInput;
+  create: UserCreateWithoutSolutionsInput;
+}
+
+export interface QuestionUpdateInput {
+  title?: Maybe<String>;
+  body?: Maybe<String>;
+  pic?: Maybe<String>;
+  author?: Maybe<UserUpdateOneRequiredWithoutQuestionsInput>;
+}
+
+export type UserWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  username?: Maybe<String>;
+  email?: Maybe<String>;
+}>;
+
+export interface UserUpdateOneRequiredWithoutQuestionsInput {
+  create?: Maybe<UserCreateWithoutQuestionsInput>;
+  update?: Maybe<UserUpdateWithoutQuestionsDataInput>;
+  upsert?: Maybe<UserUpsertWithoutQuestionsInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface SolutionUpdateWithoutLikedByDataInput {
+  body?: Maybe<String>;
+  pic?: Maybe<String>;
+  author?: Maybe<UserUpdateOneRequiredWithoutSolutionsInput>;
+}
+
+export interface UserUpdateWithoutQuestionsDataInput {
   username?: Maybe<String>;
   email?: Maybe<String>;
   password?: Maybe<String>;
+  solutions?: Maybe<SolutionUpdateManyWithoutAuthorInput>;
+  likedSolutions?: Maybe<SolutionUpdateManyWithoutLikedByInput>;
 }
 
 export interface BookUpdateInput {
@@ -325,22 +651,439 @@ export interface BookUpdateInput {
   pic?: Maybe<String>;
 }
 
+export interface SolutionScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  body?: Maybe<String>;
+  body_not?: Maybe<String>;
+  body_in?: Maybe<String[] | String>;
+  body_not_in?: Maybe<String[] | String>;
+  body_lt?: Maybe<String>;
+  body_lte?: Maybe<String>;
+  body_gt?: Maybe<String>;
+  body_gte?: Maybe<String>;
+  body_contains?: Maybe<String>;
+  body_not_contains?: Maybe<String>;
+  body_starts_with?: Maybe<String>;
+  body_not_starts_with?: Maybe<String>;
+  body_ends_with?: Maybe<String>;
+  body_not_ends_with?: Maybe<String>;
+  pic?: Maybe<String>;
+  pic_not?: Maybe<String>;
+  pic_in?: Maybe<String[] | String>;
+  pic_not_in?: Maybe<String[] | String>;
+  pic_lt?: Maybe<String>;
+  pic_lte?: Maybe<String>;
+  pic_gt?: Maybe<String>;
+  pic_gte?: Maybe<String>;
+  pic_contains?: Maybe<String>;
+  pic_not_contains?: Maybe<String>;
+  pic_starts_with?: Maybe<String>;
+  pic_not_starts_with?: Maybe<String>;
+  pic_ends_with?: Maybe<String>;
+  pic_not_ends_with?: Maybe<String>;
+  AND?: Maybe<SolutionScalarWhereInput[] | SolutionScalarWhereInput>;
+  OR?: Maybe<SolutionScalarWhereInput[] | SolutionScalarWhereInput>;
+  NOT?: Maybe<SolutionScalarWhereInput[] | SolutionScalarWhereInput>;
+}
+
+export interface SolutionUpdateManyWithoutLikedByInput {
+  create?: Maybe<
+    SolutionCreateWithoutLikedByInput[] | SolutionCreateWithoutLikedByInput
+  >;
+  delete?: Maybe<SolutionWhereUniqueInput[] | SolutionWhereUniqueInput>;
+  connect?: Maybe<SolutionWhereUniqueInput[] | SolutionWhereUniqueInput>;
+  set?: Maybe<SolutionWhereUniqueInput[] | SolutionWhereUniqueInput>;
+  disconnect?: Maybe<SolutionWhereUniqueInput[] | SolutionWhereUniqueInput>;
+  update?: Maybe<
+    | SolutionUpdateWithWhereUniqueWithoutLikedByInput[]
+    | SolutionUpdateWithWhereUniqueWithoutLikedByInput
+  >;
+  upsert?: Maybe<
+    | SolutionUpsertWithWhereUniqueWithoutLikedByInput[]
+    | SolutionUpsertWithWhereUniqueWithoutLikedByInput
+  >;
+  deleteMany?: Maybe<SolutionScalarWhereInput[] | SolutionScalarWhereInput>;
+  updateMany?: Maybe<
+    | SolutionUpdateManyWithWhereNestedInput[]
+    | SolutionUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface SolutionUpdateWithWhereUniqueWithoutAuthorInput {
+  where: SolutionWhereUniqueInput;
+  data: SolutionUpdateWithoutAuthorDataInput;
+}
+
+export interface QuestionCreateInput {
+  id?: Maybe<ID_Input>;
+  title: String;
+  body: String;
+  pic: String;
+  author: UserCreateOneWithoutQuestionsInput;
+}
+
+export interface SolutionUpdateWithoutAuthorDataInput {
+  body?: Maybe<String>;
+  pic?: Maybe<String>;
+  likedBy?: Maybe<UserUpdateManyWithoutLikedSolutionsInput>;
+}
+
+export interface QuestionSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<QuestionWhereInput>;
+  AND?: Maybe<
+    QuestionSubscriptionWhereInput[] | QuestionSubscriptionWhereInput
+  >;
+  OR?: Maybe<QuestionSubscriptionWhereInput[] | QuestionSubscriptionWhereInput>;
+  NOT?: Maybe<
+    QuestionSubscriptionWhereInput[] | QuestionSubscriptionWhereInput
+  >;
+}
+
+export interface UserUpdateManyWithoutLikedSolutionsInput {
+  create?: Maybe<
+    | UserCreateWithoutLikedSolutionsInput[]
+    | UserCreateWithoutLikedSolutionsInput
+  >;
+  delete?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  set?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  disconnect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  update?: Maybe<
+    | UserUpdateWithWhereUniqueWithoutLikedSolutionsInput[]
+    | UserUpdateWithWhereUniqueWithoutLikedSolutionsInput
+  >;
+  upsert?: Maybe<
+    | UserUpsertWithWhereUniqueWithoutLikedSolutionsInput[]
+    | UserUpsertWithWhereUniqueWithoutLikedSolutionsInput
+  >;
+  deleteMany?: Maybe<UserScalarWhereInput[] | UserScalarWhereInput>;
+  updateMany?: Maybe<
+    UserUpdateManyWithWhereNestedInput[] | UserUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface UserUpdateInput {
+  username?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  questions?: Maybe<QuestionUpdateManyWithoutAuthorInput>;
+  solutions?: Maybe<SolutionUpdateManyWithoutAuthorInput>;
+  likedSolutions?: Maybe<SolutionUpdateManyWithoutLikedByInput>;
+}
+
+export interface UserUpdateWithWhereUniqueWithoutLikedSolutionsInput {
+  where: UserWhereUniqueInput;
+  data: UserUpdateWithoutLikedSolutionsDataInput;
+}
+
 export interface UserCreateInput {
   id?: Maybe<ID_Input>;
   username: String;
   email: String;
   password: String;
+  questions?: Maybe<QuestionCreateManyWithoutAuthorInput>;
+  solutions?: Maybe<SolutionCreateManyWithoutAuthorInput>;
+  likedSolutions?: Maybe<SolutionCreateManyWithoutLikedByInput>;
 }
 
-export interface UserSubscriptionWhereInput {
+export interface UserUpdateWithoutLikedSolutionsDataInput {
+  username?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  questions?: Maybe<QuestionUpdateManyWithoutAuthorInput>;
+  solutions?: Maybe<SolutionUpdateManyWithoutAuthorInput>;
+}
+
+export interface SolutionCreateInput {
+  id?: Maybe<ID_Input>;
+  body: String;
+  pic: String;
+  author: UserCreateOneWithoutSolutionsInput;
+  likedBy?: Maybe<UserCreateManyWithoutLikedSolutionsInput>;
+}
+
+export interface QuestionUpdateManyWithoutAuthorInput {
+  create?: Maybe<
+    QuestionCreateWithoutAuthorInput[] | QuestionCreateWithoutAuthorInput
+  >;
+  delete?: Maybe<QuestionWhereUniqueInput[] | QuestionWhereUniqueInput>;
+  connect?: Maybe<QuestionWhereUniqueInput[] | QuestionWhereUniqueInput>;
+  set?: Maybe<QuestionWhereUniqueInput[] | QuestionWhereUniqueInput>;
+  disconnect?: Maybe<QuestionWhereUniqueInput[] | QuestionWhereUniqueInput>;
+  update?: Maybe<
+    | QuestionUpdateWithWhereUniqueWithoutAuthorInput[]
+    | QuestionUpdateWithWhereUniqueWithoutAuthorInput
+  >;
+  upsert?: Maybe<
+    | QuestionUpsertWithWhereUniqueWithoutAuthorInput[]
+    | QuestionUpsertWithWhereUniqueWithoutAuthorInput
+  >;
+  deleteMany?: Maybe<QuestionScalarWhereInput[] | QuestionScalarWhereInput>;
+  updateMany?: Maybe<
+    | QuestionUpdateManyWithWhereNestedInput[]
+    | QuestionUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface SolutionUpsertWithWhereUniqueWithoutLikedByInput {
+  where: SolutionWhereUniqueInput;
+  update: SolutionUpdateWithoutLikedByDataInput;
+  create: SolutionCreateWithoutLikedByInput;
+}
+
+export interface QuestionUpdateWithWhereUniqueWithoutAuthorInput {
+  where: QuestionWhereUniqueInput;
+  data: QuestionUpdateWithoutAuthorDataInput;
+}
+
+export interface UserUpdateOneRequiredWithoutSolutionsInput {
+  create?: Maybe<UserCreateWithoutSolutionsInput>;
+  update?: Maybe<UserUpdateWithoutSolutionsDataInput>;
+  upsert?: Maybe<UserUpsertWithoutSolutionsInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface QuestionUpdateWithoutAuthorDataInput {
+  title?: Maybe<String>;
+  body?: Maybe<String>;
+  pic?: Maybe<String>;
+}
+
+export interface BookCreateInput {
+  id?: Maybe<ID_Input>;
+  title: String;
+  author: String;
+  pic: String;
+}
+
+export interface QuestionUpsertWithWhereUniqueWithoutAuthorInput {
+  where: QuestionWhereUniqueInput;
+  update: QuestionUpdateWithoutAuthorDataInput;
+  create: QuestionCreateWithoutAuthorInput;
+}
+
+export interface SolutionUpdateManyDataInput {
+  body?: Maybe<String>;
+  pic?: Maybe<String>;
+}
+
+export interface QuestionScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  title?: Maybe<String>;
+  title_not?: Maybe<String>;
+  title_in?: Maybe<String[] | String>;
+  title_not_in?: Maybe<String[] | String>;
+  title_lt?: Maybe<String>;
+  title_lte?: Maybe<String>;
+  title_gt?: Maybe<String>;
+  title_gte?: Maybe<String>;
+  title_contains?: Maybe<String>;
+  title_not_contains?: Maybe<String>;
+  title_starts_with?: Maybe<String>;
+  title_not_starts_with?: Maybe<String>;
+  title_ends_with?: Maybe<String>;
+  title_not_ends_with?: Maybe<String>;
+  body?: Maybe<String>;
+  body_not?: Maybe<String>;
+  body_in?: Maybe<String[] | String>;
+  body_not_in?: Maybe<String[] | String>;
+  body_lt?: Maybe<String>;
+  body_lte?: Maybe<String>;
+  body_gt?: Maybe<String>;
+  body_gte?: Maybe<String>;
+  body_contains?: Maybe<String>;
+  body_not_contains?: Maybe<String>;
+  body_starts_with?: Maybe<String>;
+  body_not_starts_with?: Maybe<String>;
+  body_ends_with?: Maybe<String>;
+  body_not_ends_with?: Maybe<String>;
+  pic?: Maybe<String>;
+  pic_not?: Maybe<String>;
+  pic_in?: Maybe<String[] | String>;
+  pic_not_in?: Maybe<String[] | String>;
+  pic_lt?: Maybe<String>;
+  pic_lte?: Maybe<String>;
+  pic_gt?: Maybe<String>;
+  pic_gte?: Maybe<String>;
+  pic_contains?: Maybe<String>;
+  pic_not_contains?: Maybe<String>;
+  pic_starts_with?: Maybe<String>;
+  pic_not_starts_with?: Maybe<String>;
+  pic_ends_with?: Maybe<String>;
+  pic_not_ends_with?: Maybe<String>;
+  AND?: Maybe<QuestionScalarWhereInput[] | QuestionScalarWhereInput>;
+  OR?: Maybe<QuestionScalarWhereInput[] | QuestionScalarWhereInput>;
+  NOT?: Maybe<QuestionScalarWhereInput[] | QuestionScalarWhereInput>;
+}
+
+export interface BookSubscriptionWhereInput {
   mutation_in?: Maybe<MutationType[] | MutationType>;
   updatedFields_contains?: Maybe<String>;
   updatedFields_contains_every?: Maybe<String[] | String>;
   updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<UserWhereInput>;
-  AND?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
-  OR?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
-  NOT?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
+  node?: Maybe<BookWhereInput>;
+  AND?: Maybe<BookSubscriptionWhereInput[] | BookSubscriptionWhereInput>;
+  OR?: Maybe<BookSubscriptionWhereInput[] | BookSubscriptionWhereInput>;
+  NOT?: Maybe<BookSubscriptionWhereInput[] | BookSubscriptionWhereInput>;
+}
+
+export interface QuestionUpdateManyWithWhereNestedInput {
+  where: QuestionScalarWhereInput;
+  data: QuestionUpdateManyDataInput;
+}
+
+export interface SolutionUpdateManyMutationInput {
+  body?: Maybe<String>;
+  pic?: Maybe<String>;
+}
+
+export interface QuestionUpdateManyDataInput {
+  title?: Maybe<String>;
+  body?: Maybe<String>;
+  pic?: Maybe<String>;
+}
+
+export interface UserUpdateWithoutSolutionsDataInput {
+  username?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  questions?: Maybe<QuestionUpdateManyWithoutAuthorInput>;
+  likedSolutions?: Maybe<SolutionUpdateManyWithoutLikedByInput>;
+}
+
+export interface UserUpdateManyDataInput {
+  username?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+}
+
+export interface UserUpdateManyWithWhereNestedInput {
+  where: UserScalarWhereInput;
+  data: UserUpdateManyDataInput;
+}
+
+export interface UserScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  username?: Maybe<String>;
+  username_not?: Maybe<String>;
+  username_in?: Maybe<String[] | String>;
+  username_not_in?: Maybe<String[] | String>;
+  username_lt?: Maybe<String>;
+  username_lte?: Maybe<String>;
+  username_gt?: Maybe<String>;
+  username_gte?: Maybe<String>;
+  username_contains?: Maybe<String>;
+  username_not_contains?: Maybe<String>;
+  username_starts_with?: Maybe<String>;
+  username_not_starts_with?: Maybe<String>;
+  username_ends_with?: Maybe<String>;
+  username_not_ends_with?: Maybe<String>;
+  email?: Maybe<String>;
+  email_not?: Maybe<String>;
+  email_in?: Maybe<String[] | String>;
+  email_not_in?: Maybe<String[] | String>;
+  email_lt?: Maybe<String>;
+  email_lte?: Maybe<String>;
+  email_gt?: Maybe<String>;
+  email_gte?: Maybe<String>;
+  email_contains?: Maybe<String>;
+  email_not_contains?: Maybe<String>;
+  email_starts_with?: Maybe<String>;
+  email_not_starts_with?: Maybe<String>;
+  email_ends_with?: Maybe<String>;
+  email_not_ends_with?: Maybe<String>;
+  password?: Maybe<String>;
+  password_not?: Maybe<String>;
+  password_in?: Maybe<String[] | String>;
+  password_not_in?: Maybe<String[] | String>;
+  password_lt?: Maybe<String>;
+  password_lte?: Maybe<String>;
+  password_gt?: Maybe<String>;
+  password_gte?: Maybe<String>;
+  password_contains?: Maybe<String>;
+  password_not_contains?: Maybe<String>;
+  password_starts_with?: Maybe<String>;
+  password_not_starts_with?: Maybe<String>;
+  password_ends_with?: Maybe<String>;
+  password_not_ends_with?: Maybe<String>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<UserScalarWhereInput[] | UserScalarWhereInput>;
+  OR?: Maybe<UserScalarWhereInput[] | UserScalarWhereInput>;
+  NOT?: Maybe<UserScalarWhereInput[] | UserScalarWhereInput>;
+}
+
+export interface UserUpsertWithWhereUniqueWithoutLikedSolutionsInput {
+  where: UserWhereUniqueInput;
+  update: UserUpdateWithoutLikedSolutionsDataInput;
+  create: UserCreateWithoutLikedSolutionsInput;
+}
+
+export interface SolutionUpdateWithWhereUniqueWithoutLikedByInput {
+  where: SolutionWhereUniqueInput;
+  data: SolutionUpdateWithoutLikedByDataInput;
+}
+
+export interface UserUpsertWithoutQuestionsInput {
+  update: UserUpdateWithoutQuestionsDataInput;
+  create: UserCreateWithoutQuestionsInput;
 }
 
 export interface UserWhereInput {
@@ -416,155 +1159,39 @@ export interface UserWhereInput {
   createdAt_lte?: Maybe<DateTimeInput>;
   createdAt_gt?: Maybe<DateTimeInput>;
   createdAt_gte?: Maybe<DateTimeInput>;
+  questions_every?: Maybe<QuestionWhereInput>;
+  questions_some?: Maybe<QuestionWhereInput>;
+  questions_none?: Maybe<QuestionWhereInput>;
+  solutions_every?: Maybe<SolutionWhereInput>;
+  solutions_some?: Maybe<SolutionWhereInput>;
+  solutions_none?: Maybe<SolutionWhereInput>;
+  likedSolutions_every?: Maybe<SolutionWhereInput>;
+  likedSolutions_some?: Maybe<SolutionWhereInput>;
+  likedSolutions_none?: Maybe<SolutionWhereInput>;
   AND?: Maybe<UserWhereInput[] | UserWhereInput>;
   OR?: Maybe<UserWhereInput[] | UserWhereInput>;
   NOT?: Maybe<UserWhereInput[] | UserWhereInput>;
 }
 
-export interface BookCreateInput {
-  id?: Maybe<ID_Input>;
-  title: String;
-  author: String;
-  pic: String;
-}
-
-export type UserWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-  username?: Maybe<String>;
-  email?: Maybe<String>;
-}>;
-
-export interface QuestionUpdateInput {
-  title?: Maybe<String>;
-  body?: Maybe<String>;
-  pic?: Maybe<String>;
-}
-
-export interface QuestionUpdateManyMutationInput {
-  title?: Maybe<String>;
-  body?: Maybe<String>;
-  pic?: Maybe<String>;
-}
-
-export interface UserUpdateInput {
-  username?: Maybe<String>;
-  email?: Maybe<String>;
-  password?: Maybe<String>;
-}
-
-export interface BookSubscriptionWhereInput {
+export interface UserSubscriptionWhereInput {
   mutation_in?: Maybe<MutationType[] | MutationType>;
   updatedFields_contains?: Maybe<String>;
   updatedFields_contains_every?: Maybe<String[] | String>;
   updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<BookWhereInput>;
-  AND?: Maybe<BookSubscriptionWhereInput[] | BookSubscriptionWhereInput>;
-  OR?: Maybe<BookSubscriptionWhereInput[] | BookSubscriptionWhereInput>;
-  NOT?: Maybe<BookSubscriptionWhereInput[] | BookSubscriptionWhereInput>;
+  node?: Maybe<UserWhereInput>;
+  AND?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
+  OR?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
+  NOT?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
 }
 
-export interface QuestionWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
+export interface BookUpdateManyMutationInput {
   title?: Maybe<String>;
-  title_not?: Maybe<String>;
-  title_in?: Maybe<String[] | String>;
-  title_not_in?: Maybe<String[] | String>;
-  title_lt?: Maybe<String>;
-  title_lte?: Maybe<String>;
-  title_gt?: Maybe<String>;
-  title_gte?: Maybe<String>;
-  title_contains?: Maybe<String>;
-  title_not_contains?: Maybe<String>;
-  title_starts_with?: Maybe<String>;
-  title_not_starts_with?: Maybe<String>;
-  title_ends_with?: Maybe<String>;
-  title_not_ends_with?: Maybe<String>;
-  body?: Maybe<String>;
-  body_not?: Maybe<String>;
-  body_in?: Maybe<String[] | String>;
-  body_not_in?: Maybe<String[] | String>;
-  body_lt?: Maybe<String>;
-  body_lte?: Maybe<String>;
-  body_gt?: Maybe<String>;
-  body_gte?: Maybe<String>;
-  body_contains?: Maybe<String>;
-  body_not_contains?: Maybe<String>;
-  body_starts_with?: Maybe<String>;
-  body_not_starts_with?: Maybe<String>;
-  body_ends_with?: Maybe<String>;
-  body_not_ends_with?: Maybe<String>;
+  author?: Maybe<String>;
   pic?: Maybe<String>;
-  pic_not?: Maybe<String>;
-  pic_in?: Maybe<String[] | String>;
-  pic_not_in?: Maybe<String[] | String>;
-  pic_lt?: Maybe<String>;
-  pic_lte?: Maybe<String>;
-  pic_gt?: Maybe<String>;
-  pic_gte?: Maybe<String>;
-  pic_contains?: Maybe<String>;
-  pic_not_contains?: Maybe<String>;
-  pic_starts_with?: Maybe<String>;
-  pic_not_starts_with?: Maybe<String>;
-  pic_ends_with?: Maybe<String>;
-  pic_not_ends_with?: Maybe<String>;
-  AND?: Maybe<QuestionWhereInput[] | QuestionWhereInput>;
-  OR?: Maybe<QuestionWhereInput[] | QuestionWhereInput>;
-  NOT?: Maybe<QuestionWhereInput[] | QuestionWhereInput>;
 }
 
 export interface NodeNode {
   id: ID_Output;
-}
-
-export interface UserConnection {
-  pageInfo: PageInfo;
-  edges: UserEdge[];
-}
-
-export interface UserConnectionPromise
-  extends Promise<UserConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<UserEdge>>() => T;
-  aggregate: <T = AggregateUserPromise>() => T;
-}
-
-export interface UserConnectionSubscription
-  extends Promise<AsyncIterator<UserConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<UserEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateUserSubscription>() => T;
-}
-
-export interface BookEdge {
-  node: Book;
-  cursor: String;
-}
-
-export interface BookEdgePromise extends Promise<BookEdge>, Fragmentable {
-  node: <T = BookPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface BookEdgeSubscription
-  extends Promise<AsyncIterator<BookEdge>>,
-    Fragmentable {
-  node: <T = BookSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
 }
 
 export interface UserPreviousValues {
@@ -598,45 +1225,111 @@ export interface UserPreviousValuesSubscription
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
-export interface AggregateBook {
-  count: Int;
+export interface BookConnection {
+  pageInfo: PageInfo;
+  edges: BookEdge[];
 }
 
-export interface AggregateBookPromise
-  extends Promise<AggregateBook>,
+export interface BookConnectionPromise
+  extends Promise<BookConnection>,
     Fragmentable {
-  count: () => Promise<Int>;
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<BookEdge>>() => T;
+  aggregate: <T = AggregateBookPromise>() => T;
 }
 
-export interface AggregateBookSubscription
-  extends Promise<AsyncIterator<AggregateBook>>,
+export interface BookConnectionSubscription
+  extends Promise<AsyncIterator<BookConnection>>,
     Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<BookEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateBookSubscription>() => T;
 }
 
-export interface QuestionSubscriptionPayload {
+export interface PageInfo {
+  hasNextPage: Boolean;
+  hasPreviousPage: Boolean;
+  startCursor?: String;
+  endCursor?: String;
+}
+
+export interface PageInfoPromise extends Promise<PageInfo>, Fragmentable {
+  hasNextPage: () => Promise<Boolean>;
+  hasPreviousPage: () => Promise<Boolean>;
+  startCursor: () => Promise<String>;
+  endCursor: () => Promise<String>;
+}
+
+export interface PageInfoSubscription
+  extends Promise<AsyncIterator<PageInfo>>,
+    Fragmentable {
+  hasNextPage: () => Promise<AsyncIterator<Boolean>>;
+  hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
+  startCursor: () => Promise<AsyncIterator<String>>;
+  endCursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface SolutionPreviousValues {
+  id: ID_Output;
+  body: String;
+  pic: String;
+}
+
+export interface SolutionPreviousValuesPromise
+  extends Promise<SolutionPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  body: () => Promise<String>;
+  pic: () => Promise<String>;
+}
+
+export interface SolutionPreviousValuesSubscription
+  extends Promise<AsyncIterator<SolutionPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  body: () => Promise<AsyncIterator<String>>;
+  pic: () => Promise<AsyncIterator<String>>;
+}
+
+export interface SolutionSubscriptionPayload {
   mutation: MutationType;
-  node: Question;
+  node: Solution;
   updatedFields: String[];
-  previousValues: QuestionPreviousValues;
+  previousValues: SolutionPreviousValues;
 }
 
-export interface QuestionSubscriptionPayloadPromise
-  extends Promise<QuestionSubscriptionPayload>,
+export interface SolutionSubscriptionPayloadPromise
+  extends Promise<SolutionSubscriptionPayload>,
     Fragmentable {
   mutation: () => Promise<MutationType>;
-  node: <T = QuestionPromise>() => T;
+  node: <T = SolutionPromise>() => T;
   updatedFields: () => Promise<String[]>;
-  previousValues: <T = QuestionPreviousValuesPromise>() => T;
+  previousValues: <T = SolutionPreviousValuesPromise>() => T;
 }
 
-export interface QuestionSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<QuestionSubscriptionPayload>>,
+export interface SolutionSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<SolutionSubscriptionPayload>>,
     Fragmentable {
   mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = QuestionSubscription>() => T;
+  node: <T = SolutionSubscription>() => T;
   updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = QuestionPreviousValuesSubscription>() => T;
+  previousValues: <T = SolutionPreviousValuesSubscription>() => T;
+}
+
+export interface BatchPayload {
+  count: Long;
+}
+
+export interface BatchPayloadPromise
+  extends Promise<BatchPayload>,
+    Fragmentable {
+  count: () => Promise<Long>;
+}
+
+export interface BatchPayloadSubscription
+  extends Promise<AsyncIterator<BatchPayload>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Long>>;
 }
 
 export interface UserEdge {
@@ -656,20 +1349,197 @@ export interface UserEdgeSubscription
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface AggregateUser {
+export interface User {
+  id: ID_Output;
+  username: String;
+  email: String;
+  password: String;
+  updatedAt: DateTimeOutput;
+  createdAt: DateTimeOutput;
+}
+
+export interface UserPromise extends Promise<User>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  username: () => Promise<String>;
+  email: () => Promise<String>;
+  password: () => Promise<String>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  createdAt: () => Promise<DateTimeOutput>;
+  questions: <T = FragmentableArray<Question>>(args?: {
+    where?: QuestionWhereInput;
+    orderBy?: QuestionOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  solutions: <T = FragmentableArray<Solution>>(args?: {
+    where?: SolutionWhereInput;
+    orderBy?: SolutionOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  likedSolutions: <T = FragmentableArray<Solution>>(args?: {
+    where?: SolutionWhereInput;
+    orderBy?: SolutionOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface UserSubscription
+  extends Promise<AsyncIterator<User>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  username: () => Promise<AsyncIterator<String>>;
+  email: () => Promise<AsyncIterator<String>>;
+  password: () => Promise<AsyncIterator<String>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  questions: <T = Promise<AsyncIterator<QuestionSubscription>>>(args?: {
+    where?: QuestionWhereInput;
+    orderBy?: QuestionOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  solutions: <T = Promise<AsyncIterator<SolutionSubscription>>>(args?: {
+    where?: SolutionWhereInput;
+    orderBy?: SolutionOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  likedSolutions: <T = Promise<AsyncIterator<SolutionSubscription>>>(args?: {
+    where?: SolutionWhereInput;
+    orderBy?: SolutionOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface UserNullablePromise
+  extends Promise<User | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  username: () => Promise<String>;
+  email: () => Promise<String>;
+  password: () => Promise<String>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  createdAt: () => Promise<DateTimeOutput>;
+  questions: <T = FragmentableArray<Question>>(args?: {
+    where?: QuestionWhereInput;
+    orderBy?: QuestionOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  solutions: <T = FragmentableArray<Solution>>(args?: {
+    where?: SolutionWhereInput;
+    orderBy?: SolutionOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  likedSolutions: <T = FragmentableArray<Solution>>(args?: {
+    where?: SolutionWhereInput;
+    orderBy?: SolutionOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface AggregateSolution {
   count: Int;
 }
 
-export interface AggregateUserPromise
-  extends Promise<AggregateUser>,
+export interface AggregateSolutionPromise
+  extends Promise<AggregateSolution>,
     Fragmentable {
   count: () => Promise<Int>;
 }
 
-export interface AggregateUserSubscription
-  extends Promise<AsyncIterator<AggregateUser>>,
+export interface AggregateSolutionSubscription
+  extends Promise<AsyncIterator<AggregateSolution>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface Question {
+  id: ID_Output;
+  title: String;
+  body: String;
+  pic: String;
+}
+
+export interface QuestionPromise extends Promise<Question>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  title: () => Promise<String>;
+  body: () => Promise<String>;
+  pic: () => Promise<String>;
+  author: <T = UserPromise>() => T;
+}
+
+export interface QuestionSubscription
+  extends Promise<AsyncIterator<Question>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  title: () => Promise<AsyncIterator<String>>;
+  body: () => Promise<AsyncIterator<String>>;
+  pic: () => Promise<AsyncIterator<String>>;
+  author: <T = UserSubscription>() => T;
+}
+
+export interface QuestionNullablePromise
+  extends Promise<Question | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  title: () => Promise<String>;
+  body: () => Promise<String>;
+  pic: () => Promise<String>;
+  author: <T = UserPromise>() => T;
+}
+
+export interface SolutionConnection {
+  pageInfo: PageInfo;
+  edges: SolutionEdge[];
+}
+
+export interface SolutionConnectionPromise
+  extends Promise<SolutionConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<SolutionEdge>>() => T;
+  aggregate: <T = AggregateSolutionPromise>() => T;
+}
+
+export interface SolutionConnectionSubscription
+  extends Promise<AsyncIterator<SolutionConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<SolutionEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateSolutionSubscription>() => T;
 }
 
 export interface Book {
@@ -704,105 +1574,23 @@ export interface BookNullablePromise
   pic: () => Promise<String>;
 }
 
-export interface AggregateQuestion {
-  count: Int;
+export interface QuestionEdge {
+  node: Question;
+  cursor: String;
 }
 
-export interface AggregateQuestionPromise
-  extends Promise<AggregateQuestion>,
+export interface QuestionEdgePromise
+  extends Promise<QuestionEdge>,
     Fragmentable {
-  count: () => Promise<Int>;
+  node: <T = QuestionPromise>() => T;
+  cursor: () => Promise<String>;
 }
 
-export interface AggregateQuestionSubscription
-  extends Promise<AsyncIterator<AggregateQuestion>>,
+export interface QuestionEdgeSubscription
+  extends Promise<AsyncIterator<QuestionEdge>>,
     Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface PageInfo {
-  hasNextPage: Boolean;
-  hasPreviousPage: Boolean;
-  startCursor?: String;
-  endCursor?: String;
-}
-
-export interface PageInfoPromise extends Promise<PageInfo>, Fragmentable {
-  hasNextPage: () => Promise<Boolean>;
-  hasPreviousPage: () => Promise<Boolean>;
-  startCursor: () => Promise<String>;
-  endCursor: () => Promise<String>;
-}
-
-export interface PageInfoSubscription
-  extends Promise<AsyncIterator<PageInfo>>,
-    Fragmentable {
-  hasNextPage: () => Promise<AsyncIterator<Boolean>>;
-  hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
-  startCursor: () => Promise<AsyncIterator<String>>;
-  endCursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface BatchPayload {
-  count: Long;
-}
-
-export interface BatchPayloadPromise
-  extends Promise<BatchPayload>,
-    Fragmentable {
-  count: () => Promise<Long>;
-}
-
-export interface BatchPayloadSubscription
-  extends Promise<AsyncIterator<BatchPayload>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Long>>;
-}
-
-export interface QuestionConnection {
-  pageInfo: PageInfo;
-  edges: QuestionEdge[];
-}
-
-export interface QuestionConnectionPromise
-  extends Promise<QuestionConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<QuestionEdge>>() => T;
-  aggregate: <T = AggregateQuestionPromise>() => T;
-}
-
-export interface QuestionConnectionSubscription
-  extends Promise<AsyncIterator<QuestionConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<QuestionEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateQuestionSubscription>() => T;
-}
-
-export interface BookPreviousValues {
-  id: ID_Output;
-  title: String;
-  author: String;
-  pic: String;
-}
-
-export interface BookPreviousValuesPromise
-  extends Promise<BookPreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  title: () => Promise<String>;
-  author: () => Promise<String>;
-  pic: () => Promise<String>;
-}
-
-export interface BookPreviousValuesSubscription
-  extends Promise<AsyncIterator<BookPreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  title: () => Promise<AsyncIterator<String>>;
-  author: () => Promise<AsyncIterator<String>>;
-  pic: () => Promise<AsyncIterator<String>>;
+  node: <T = QuestionSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
 }
 
 export interface BookSubscriptionPayload {
@@ -830,84 +1618,6 @@ export interface BookSubscriptionPayloadSubscription
   previousValues: <T = BookPreviousValuesSubscription>() => T;
 }
 
-export interface QuestionPreviousValues {
-  id: ID_Output;
-  title: String;
-  body: String;
-  pic: String;
-}
-
-export interface QuestionPreviousValuesPromise
-  extends Promise<QuestionPreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  title: () => Promise<String>;
-  body: () => Promise<String>;
-  pic: () => Promise<String>;
-}
-
-export interface QuestionPreviousValuesSubscription
-  extends Promise<AsyncIterator<QuestionPreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  title: () => Promise<AsyncIterator<String>>;
-  body: () => Promise<AsyncIterator<String>>;
-  pic: () => Promise<AsyncIterator<String>>;
-}
-
-export interface BookConnection {
-  pageInfo: PageInfo;
-  edges: BookEdge[];
-}
-
-export interface BookConnectionPromise
-  extends Promise<BookConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<BookEdge>>() => T;
-  aggregate: <T = AggregateBookPromise>() => T;
-}
-
-export interface BookConnectionSubscription
-  extends Promise<AsyncIterator<BookConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<BookEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateBookSubscription>() => T;
-}
-
-export interface Question {
-  id: ID_Output;
-  title: String;
-  body: String;
-  pic: String;
-}
-
-export interface QuestionPromise extends Promise<Question>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  title: () => Promise<String>;
-  body: () => Promise<String>;
-  pic: () => Promise<String>;
-}
-
-export interface QuestionSubscription
-  extends Promise<AsyncIterator<Question>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  title: () => Promise<AsyncIterator<String>>;
-  body: () => Promise<AsyncIterator<String>>;
-  pic: () => Promise<AsyncIterator<String>>;
-}
-
-export interface QuestionNullablePromise
-  extends Promise<Question | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  title: () => Promise<String>;
-  body: () => Promise<String>;
-  pic: () => Promise<String>;
-}
-
 export interface UserSubscriptionPayload {
   mutation: MutationType;
   node: User;
@@ -933,77 +1643,264 @@ export interface UserSubscriptionPayloadSubscription
   previousValues: <T = UserPreviousValuesSubscription>() => T;
 }
 
-export interface QuestionEdge {
-  node: Question;
+export interface BookPreviousValues {
+  id: ID_Output;
+  title: String;
+  author: String;
+  pic: String;
+}
+
+export interface BookPreviousValuesPromise
+  extends Promise<BookPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  title: () => Promise<String>;
+  author: () => Promise<String>;
+  pic: () => Promise<String>;
+}
+
+export interface BookPreviousValuesSubscription
+  extends Promise<AsyncIterator<BookPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  title: () => Promise<AsyncIterator<String>>;
+  author: () => Promise<AsyncIterator<String>>;
+  pic: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateUser {
+  count: Int;
+}
+
+export interface AggregateUserPromise
+  extends Promise<AggregateUser>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateUserSubscription
+  extends Promise<AsyncIterator<AggregateUser>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface BookEdge {
+  node: Book;
   cursor: String;
 }
 
-export interface QuestionEdgePromise
-  extends Promise<QuestionEdge>,
-    Fragmentable {
-  node: <T = QuestionPromise>() => T;
+export interface BookEdgePromise extends Promise<BookEdge>, Fragmentable {
+  node: <T = BookPromise>() => T;
   cursor: () => Promise<String>;
 }
 
-export interface QuestionEdgeSubscription
-  extends Promise<AsyncIterator<QuestionEdge>>,
+export interface BookEdgeSubscription
+  extends Promise<AsyncIterator<BookEdge>>,
     Fragmentable {
-  node: <T = QuestionSubscription>() => T;
+  node: <T = BookSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface User {
+export interface QuestionPreviousValues {
   id: ID_Output;
-  username: String;
-  email: String;
-  password: String;
-  updatedAt: DateTimeOutput;
-  createdAt: DateTimeOutput;
+  title: String;
+  body: String;
+  pic: String;
 }
 
-export interface UserPromise extends Promise<User>, Fragmentable {
+export interface QuestionPreviousValuesPromise
+  extends Promise<QuestionPreviousValues>,
+    Fragmentable {
   id: () => Promise<ID_Output>;
-  username: () => Promise<String>;
-  email: () => Promise<String>;
-  password: () => Promise<String>;
-  updatedAt: () => Promise<DateTimeOutput>;
-  createdAt: () => Promise<DateTimeOutput>;
+  title: () => Promise<String>;
+  body: () => Promise<String>;
+  pic: () => Promise<String>;
 }
 
-export interface UserSubscription
-  extends Promise<AsyncIterator<User>>,
+export interface QuestionPreviousValuesSubscription
+  extends Promise<AsyncIterator<QuestionPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  username: () => Promise<AsyncIterator<String>>;
-  email: () => Promise<AsyncIterator<String>>;
-  password: () => Promise<AsyncIterator<String>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  title: () => Promise<AsyncIterator<String>>;
+  body: () => Promise<AsyncIterator<String>>;
+  pic: () => Promise<AsyncIterator<String>>;
 }
 
-export interface UserNullablePromise
-  extends Promise<User | null>,
+export interface QuestionSubscriptionPayload {
+  mutation: MutationType;
+  node: Question;
+  updatedFields: String[];
+  previousValues: QuestionPreviousValues;
+}
+
+export interface QuestionSubscriptionPayloadPromise
+  extends Promise<QuestionSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = QuestionPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = QuestionPreviousValuesPromise>() => T;
+}
+
+export interface QuestionSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<QuestionSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = QuestionSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = QuestionPreviousValuesSubscription>() => T;
+}
+
+export interface AggregateBook {
+  count: Int;
+}
+
+export interface AggregateBookPromise
+  extends Promise<AggregateBook>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateBookSubscription
+  extends Promise<AsyncIterator<AggregateBook>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface UserConnection {
+  pageInfo: PageInfo;
+  edges: UserEdge[];
+}
+
+export interface UserConnectionPromise
+  extends Promise<UserConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<UserEdge>>() => T;
+  aggregate: <T = AggregateUserPromise>() => T;
+}
+
+export interface UserConnectionSubscription
+  extends Promise<AsyncIterator<UserConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<UserEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateUserSubscription>() => T;
+}
+
+export interface Solution {
+  id: ID_Output;
+  body: String;
+  pic: String;
+}
+
+export interface SolutionPromise extends Promise<Solution>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  body: () => Promise<String>;
+  pic: () => Promise<String>;
+  author: <T = UserPromise>() => T;
+  likedBy: <T = FragmentableArray<User>>(args?: {
+    where?: UserWhereInput;
+    orderBy?: UserOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface SolutionSubscription
+  extends Promise<AsyncIterator<Solution>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  body: () => Promise<AsyncIterator<String>>;
+  pic: () => Promise<AsyncIterator<String>>;
+  author: <T = UserSubscription>() => T;
+  likedBy: <T = Promise<AsyncIterator<UserSubscription>>>(args?: {
+    where?: UserWhereInput;
+    orderBy?: UserOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface SolutionNullablePromise
+  extends Promise<Solution | null>,
     Fragmentable {
   id: () => Promise<ID_Output>;
-  username: () => Promise<String>;
-  email: () => Promise<String>;
-  password: () => Promise<String>;
-  updatedAt: () => Promise<DateTimeOutput>;
-  createdAt: () => Promise<DateTimeOutput>;
+  body: () => Promise<String>;
+  pic: () => Promise<String>;
+  author: <T = UserPromise>() => T;
+  likedBy: <T = FragmentableArray<User>>(args?: {
+    where?: UserWhereInput;
+    orderBy?: UserOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
-/*
-The `Boolean` scalar type represents `true` or `false`.
-*/
-export type Boolean = boolean;
+export interface QuestionConnection {
+  pageInfo: PageInfo;
+  edges: QuestionEdge[];
+}
 
-/*
-The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
-*/
-export type ID_Input = string | number;
-export type ID_Output = string;
+export interface QuestionConnectionPromise
+  extends Promise<QuestionConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<QuestionEdge>>() => T;
+  aggregate: <T = AggregateQuestionPromise>() => T;
+}
 
-export type Long = string;
+export interface QuestionConnectionSubscription
+  extends Promise<AsyncIterator<QuestionConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<QuestionEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateQuestionSubscription>() => T;
+}
+
+export interface AggregateQuestion {
+  count: Int;
+}
+
+export interface AggregateQuestionPromise
+  extends Promise<AggregateQuestion>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateQuestionSubscription
+  extends Promise<AsyncIterator<AggregateQuestion>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface SolutionEdge {
+  node: Solution;
+  cursor: String;
+}
+
+export interface SolutionEdgePromise
+  extends Promise<SolutionEdge>,
+    Fragmentable {
+  node: <T = SolutionPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface SolutionEdgeSubscription
+  extends Promise<AsyncIterator<SolutionEdge>>,
+    Fragmentable {
+  node: <T = SolutionSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
 
 /*
 DateTime scalar input type, allowing Date
@@ -1020,10 +1917,23 @@ The `Int` scalar type represents non-fractional signed whole numeric values. Int
 */
 export type Int = number;
 
+export type Long = string;
+
 /*
 The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
 */
 export type String = string;
+
+/*
+The `Boolean` scalar type represents `true` or `false`.
+*/
+export type Boolean = boolean;
+
+/*
+The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
+*/
+export type ID_Input = string | number;
+export type ID_Output = string;
 
 /**
  * Model Metadata
@@ -1040,6 +1950,10 @@ export const models: Model[] = [
   },
   {
     name: "Question",
+    embedded: false
+  },
+  {
+    name: "Solution",
     embedded: false
   }
 ];
