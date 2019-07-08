@@ -4,7 +4,8 @@
   "description": "A QA app for graduate students in SWUFE university",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "nodemon app.js",
+    "start": "nodemon src/index.js --ext js,graphql --exec babel-node"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,24 @@
   "bugs": {
     "url": "https://github.com/paladinze/cankao-api/issues"
   },
-  "homepage": "https://github.com/paladinze/cankao-api#readme"
+  "homepage": "https://github.com/paladinze/cankao-api#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.0.0",
+    "graphql-yoga": "^1.18.0",
+    "jest": "^24.8.0",
+    "jsonwebtoken": "^8.5.1",
+    "prisma-binding": "^2.3.15",
+    "prisma-client-lib": "^1.34.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/node": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "babel-preset-env": "^1.7.0",
+    "nodemon": "^1.19.1"
+  }
 }
