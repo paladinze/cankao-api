@@ -1,5 +1,4 @@
 import bycrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import getUserId from "../utils/getUserId";
 import generateToken from "../utils/generateToken";
 import hashPassword from "../utils/hashPassword";
@@ -27,19 +26,16 @@ const mutation = {
 
   async createUser(parent, args, { prisma }, info) {
     // validate email
-    const emailTaken = await prisma.exists.User({ email: args.data.email });
+    const emailTaken = await prisma.$exists.user({ email: args.data.email });
     if (emailTaken) {
       throw new Error("email taken");
     }
 
-    // hash password
-    const password = await hashPassword();
-
-    const user = await prisma.mutation.createUser({
-      data: {
-        ...args.data,
-        password
-      }
+    // hash password`
+    const password = await hashPassword(args.data.password);
+    const user = await prisma.createUser({
+      ...args.data,
+      password
     });
     return {
       user,
