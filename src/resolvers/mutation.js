@@ -5,10 +5,8 @@ import hashPassword from "../utils/hashPassword";
 
 const mutation = {
   async login(parent, args, { prisma }, info) {
-    const user = await prisma.query.user({
-      where: {
-        email: args.data.email
-      }
+    const user = await prisma.user({
+      email: args.data.email
     });
 
     if (!user) {
