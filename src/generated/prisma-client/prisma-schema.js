@@ -230,7 +230,7 @@ type Question {
   id: ID!
   title: String!
   body: String!
-  pic: String!
+  pic: String
   author: User!
 }
 
@@ -244,7 +244,7 @@ input QuestionCreateInput {
   id: ID
   title: String!
   body: String!
-  pic: String!
+  pic: String
   author: UserCreateOneWithoutQuestionsInput!
 }
 
@@ -257,7 +257,7 @@ input QuestionCreateWithoutAuthorInput {
   id: ID
   title: String!
   body: String!
-  pic: String!
+  pic: String
 }
 
 type QuestionEdge {
@@ -280,7 +280,7 @@ type QuestionPreviousValues {
   id: ID!
   title: String!
   body: String!
-  pic: String!
+  pic: String
 }
 
 input QuestionScalarWhereInput {

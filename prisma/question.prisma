@@ -2,6 +2,6 @@ type Question {
   id: ID! @id
   title: String!
   body: String!
-  pic: String!
+  pic: String
   author: User! @relation(name: "OwnQuestions", onDelete: SET_NULL)
 }

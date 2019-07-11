@@ -500,7 +500,7 @@ export interface QuestionCreateWithoutAuthorInput {
   id?: Maybe<ID_Input>;
   title: String;
   body: String;
-  pic: String;
+  pic?: Maybe<String>;
 }
 
 export interface BookWhereInput {
@@ -731,7 +731,7 @@ export interface QuestionCreateInput {
   id?: Maybe<ID_Input>;
   title: String;
   body: String;
-  pic: String;
+  pic?: Maybe<String>;
   author: UserCreateOneWithoutQuestionsInput;
 }
 
@@ -1490,7 +1490,7 @@ export interface Question {
   id: ID_Output;
   title: String;
   body: String;
-  pic: String;
+  pic?: String;
 }
 
 export interface QuestionPromise extends Promise<Question>, Fragmentable {
@@ -1705,7 +1705,7 @@ export interface QuestionPreviousValues {
   id: ID_Output;
   title: String;
   body: String;
-  pic: String;
+  pic?: String;
 }
 
 export interface QuestionPreviousValuesPromise

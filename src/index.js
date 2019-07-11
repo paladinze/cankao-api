@@ -14,7 +14,13 @@ const server = new ApolloServer({
   context: req => ({
     req,
     prisma
-  })
+  }),
+  formatError: err => {
+    if (err.message.startsWith("Database Error: ")) {
+      return new Error("Internal server error");
+    }
+    return err;
+  }
 });
 
 server.listen({ port: 4000 }).then(({ url }) => {
